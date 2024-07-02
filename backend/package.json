@@ -4,6 +4,7 @@
     "axios": "^1.7.2",
     "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.10.1",
@@ -11,9 +12,6 @@
     "puppeteer": "^22.12.1"
   },
   "scripts": {
-    "start-connection": "node index.js",
-    "start-server": "node myClassController.js",
-    "dev": "npm run start-server",
-    "catalog": "node osuCatalog.js"
+    "start": "node osuCatalog.js"
   }
 }
