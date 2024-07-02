@@ -73,5 +73,6 @@ async function fetchCourseHelper(requestBody) {
   return response;
 }
 
+// console.log(await fetchCourseByCRN("15512"))
 
 export { fetchCoursesByKeyword, fetchCourseByCRN, fetchCourseByTerm };

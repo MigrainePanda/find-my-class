@@ -69,6 +69,6 @@ async function storeTermData(data) {
   });  
 }
 
-handleTermData();
+// handleTermData();
 
 export default handleTermData; 
