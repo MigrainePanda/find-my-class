@@ -27,4 +27,21 @@ app.listen(8800, () => {
   console.log("Server running on port 8800.")
 })
 
-export default db;
+async function makeRequest(url, payload) {
+  try {
+    const response = await fetch(url, payload); 
+
+    if (!response.ok) {
+      console.log("response: ", response)
+      throw new Error('Network response was not ok');
+    }
+    
+    const data = await response.json();
+    return data;
+  }
+  catch (err) {
+    console.error('Fetch error: ', err)
+  }
+}
+
+export { db, makeRequest };

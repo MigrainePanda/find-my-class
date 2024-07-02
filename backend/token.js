@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import db from './setup.js'
+import { db, makeRequest } from './setup.js'
 config();
 
 
@@ -11,10 +11,11 @@ const OATH2_URL = "https://api.oregonstate.edu/oauth2/token"
 async function handleToken() {
   const token_data = await getAccessToken();
   const access_token = token_data["access_token"]
+  // console.log("access_token: ", access_token);
 
   const response = await storeToken(access_token);
   console.log("handle token: ", response)
-  return response;
+  return access_token;
 }
 
 async function storeToken(access_token) {
@@ -28,7 +29,7 @@ async function storeToken(access_token) {
 }
 
 async function checkTokenInDB() {
-  const q = `SELECT * FROM tokens WHERE short_name='OATH2'`;
+  const q = `IF EXISTS(SELECT 1 FROM tokens WHERE short_name='OATH2')`;
   return new Promise((resolve, reject) => {
     db.query(q, (err, res) => {
       if (err) reject(err);
@@ -38,11 +39,6 @@ async function checkTokenInDB() {
 }
 
 async function getAccessToken() {
-  const token = await checkTokenInDB();
-  if (token) {
-    return token;
-  }
-
   try {
     const headers = {
       "Content-Type": "application/x-www-form-urlencoded",
