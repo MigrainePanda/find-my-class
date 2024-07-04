@@ -19,8 +19,8 @@ app.get('/courses', (req, res) => {
     handleCoursesResponse(courses.retrieveAllCourses(), req, res);
     return;
   }
-  if (query_strings['courseInput'] !== '') {
-    handleCoursesResponse(courses.retrieveCoursesByKeyword(query_strings['courseInput']), req, res);
+  if (query_strings['codeInput'] !== '') {
+    handleCoursesResponse(courses.retrieveCoursesByKeyword(query_strings['codeInput']), req, res);
     return;
   }
   if (query_strings['crnInput'] !== '') {
