@@ -5,33 +5,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import WebTitle from "./components/WebTitle.tsx";
 
 // pages
-import HomePage from "./pages/HomePage.tsx";
-import ClassesPage from "./pages/ClassesPage.tsx";
+import HomePage from "./pages/HomePage/HomePage.tsx";
+import CoursesPage from "./pages/CoursesPage/CoursesPage.tsx";
 
 import "./App.css";
 
 
 function App() {
-    return (
-        <>
-            <BrowserRouter>
-                <header>
-                </header>
-
-                {/* navigation */}
-
-                <main>
-                    <section>
-                        <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/classes" element={<ClassesPage />} />
-                            
-                        </Routes>
-                    </section>
-                </main>
-            </BrowserRouter>
-        </>
-    );
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/courses" element={<CoursesPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
