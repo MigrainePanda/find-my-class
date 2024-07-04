@@ -1,0 +1,40 @@
+:root {
+    --header-background: #ededed;
+}
+
+.navbar-container {
+    margin-left: 15%;
+    margin-right: 15%;
+    background-color: var(--header-background);
+    border-radius: 15px;
+    margin-bottom: 30px;
+}
+
+.navbar-wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    font-size: 1.2em;
+}
+
+.navbar-wrapper a {
+    font-weight: 500;
+    color: black;
+    text-decoration: inherit;
+}
+.navbar-wrapper a:hover {
+    color: #646cff;
+    /* color: #535bf2; */
+}
+
+/* .navbar-brand {
+    color: red;
+}
+
+.navbar-menu {
+    color: blue;
+}
+
+.navbar-menu-items {
+    color: green;
+} */
