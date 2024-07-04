@@ -26,15 +26,17 @@ function CoursesPage() {
             <main className="main">
                 <p className="page-description">Find your class around Oregon State University.</p>
                 <div className="form-container">
-                    <form method="get">
-                        <input type="text" id="courseInput" name="courseInput" className="courseInputs" placeholder="Course..."/>
+                    <form method="get" className="form-input">
                         <input type="text" id="crnInput" name="crnInput" className="courseInputs" placeholder="CRN..."/>
+                        <input type="text" id="codeInput" name="codeInput" className="codeInputs" placeholder="Code..."/>
                         <input type="submit" />
                     </form>
+                    <div className="form-table-wrapper">
+                        <CourseList
+                            courses={courses}
+                        />
+                    </div>
                 </div>
-                <CourseList
-                    courses={courses}
-                />
             </main>
         </div>
     );}

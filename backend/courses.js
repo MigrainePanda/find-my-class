@@ -7,7 +7,8 @@ const COURSES_URL = "https://classes.oregonstate.edu/api/?page=fose&route=search
 
 
 const retrieveAllCourses = async () => {
-  const q = "SELECT DISTINCT title FROM courses";
+  // const q = "SELECT DISTINCT title FROM courses";
+  const q = "SELECT * FROM courses WHERE title IN (SELECT max(title) FROM courses GROUP BY title)";
   return new Promise((resolve, reject) => {
     db.query(q, (err, res) => {
       if (err) reject(err);
@@ -17,25 +18,18 @@ const retrieveAllCourses = async () => {
 }
 
 const retrieveCoursesByKeyword = async (keyword) => {
-  const requestBody = {
-    other: {
-      srcdb: "999999"
-    },
-    criteria: [
-      {
-        field: "alias",
-        value: keyword
-      }
-    ]
-  };
-
-  let courses = await fetchCourseHelper(requestBody);
-  courses = courses["results"];
-  return courses;
+  const q = `SELECT * FROM courses WHERE code LIKE '%${keyword}%'`;
+  return new Promise((resolve, reject) => {
+    db.query(q, (err, res) => {
+      if (err) reject(err);
+      console.log(res);
+      resolve(res)
+    });
+  });
 }
 
 const retrieveCourseByCRN = async (crn) => {
-  const q = `SELECT title FROM courses WHERE crn=${crn}`;
+  const q = `SELECT * FROM courses WHERE crn=${crn}`;
   return new Promise((resolve, reject) => {
     db.query(q, (err, res) => {
       if (err) reject(err);
@@ -46,7 +40,7 @@ const retrieveCourseByCRN = async (crn) => {
 
 const retrieveCoursesByTerm = async (term) => {
   // add term formatting bc fall 2024 -> 202501
-  const q = `SELECT title FROM courses WHERE srcdb=${term}`;
+  const q = `SELECT * FROM courses WHERE srcdb=${term}`;
   return new Promise((resolve, reject) => {
     db.query(q, (err, res) => {
       if (err) reject(err);

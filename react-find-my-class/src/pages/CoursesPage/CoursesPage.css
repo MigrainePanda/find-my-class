@@ -1,3 +1,37 @@
-* {
-    border: 1px red solid;
+.form-input {
+    display: flex;
+    justify-content: center;
+}
+
+.form-container {
+    margin-top: 50px;
+}
+
+.form-table-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.form-table {
+    border-collapse: collapse;
+}
+
+.form-table table, td, th {
+    border: 0.5px solid black;
+}
+
+.form-table td, th {
+    padding: 5px;
+}
+
+.select-box-wrapper {
+    display: flex;
+    justify-content: center;
+
+}
+
+.select-box {
+    width: 15px;
+    height: 15px;
 }

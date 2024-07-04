@@ -5,10 +5,18 @@ import Course from './Course';
 
 function CourseList({ courses }) {
     return (
-        <table id="courses">
+        <table id="courses" className="form-table">
             <thead>
                 <tr>
+                    <th>Select</th>
+                    <th>CRN</th>
                     <th>Title</th>
+                    <th>Code</th>
+                    <th>Section No.</th>
+                    <th>Session Offered</th>
+                    <th>Instructor</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                 </tr>
             </thead>
             <tbody>
