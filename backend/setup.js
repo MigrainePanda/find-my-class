@@ -1,6 +1,4 @@
 import mysql from 'mysql2'
-import express from 'express'
-import cors from 'cors'
 
 const db_name = "find_my_class"
 const db = mysql.createPool({
@@ -18,14 +16,6 @@ db.getConnection((err, con) => {
         console.log("Succesfully connected to the database.")
     }
 });
-
-const app = express()
-app.use(cors())
-app.use(express.json())
-
-app.listen(8800, () => {
-  console.log("Server running on port 8800.")
-})
 
 async function makeRequest(url, payload) {
   try {

@@ -12,6 +12,6 @@
     "puppeteer": "^22.12.1"
   },
   "scripts": {
-    "start": "node osuCatalog.js"
+    "dev": "nodemon controller.js"
   }
 }
