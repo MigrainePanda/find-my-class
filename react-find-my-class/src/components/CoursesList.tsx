@@ -1,9 +1,7 @@
 import Course from './Course';
 
-// Change the function names and parameters 
-// to fit your portfolio topic and schema.
-
 function CourseList({ courses }) {
+    const num_courses_displayed = 20;
     return (
         <table id="courses" className="form-table">
             <thead>
@@ -20,7 +18,7 @@ function CourseList({ courses }) {
                 </tr>
             </thead>
             <tbody>
-                {courses.slice(0, 10).map((course, i) => 
+                {courses.slice(0, num_courses_displayed).map((course, i) =>
                     <Course 
                         course={course}
                         key={i}

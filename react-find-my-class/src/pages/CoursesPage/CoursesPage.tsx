@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navigation/Navigation"
+import Footer from "../../components/Footer"
 
 import "./CoursesPage.css"
 import CourseList from "../../components/CoursesList";
@@ -24,20 +25,26 @@ function CoursesPage() {
         <div className="outer-wrapper">
             <Navbar />
             <main className="main">
-                <p className="page-description">Find your class around Oregon State University.</p>
+                <p className="page-main-description">Find your class around Oregon State University.</p>
                 <div className="form-container">
                     <form method="get" className="form-input">
                         <input type="text" id="crnInput" name="crnInput" className="courseInputs" placeholder="CRN..."/>
                         <input type="text" id="codeInput" name="codeInput" className="codeInputs" placeholder="Code..."/>
-                        <input type="submit" />
+                        <input type="submit" value="Search" />
                     </form>
-                    <div className="form-table-wrapper">
-                        <CourseList
-                            courses={courses}
-                        />
-                    </div>
+                </div>
+                <div className="form-submit">
+                    <form method="get" className="form-input">
+                        <input type="submit" value="Submit Selection" />
+                    </form>
+                </div>
+                <div className="form-table-wrapper">
+                    <CourseList
+                        courses={courses}
+                    />
                 </div>
             </main>
+            <Footer />
         </div>
     );}
 

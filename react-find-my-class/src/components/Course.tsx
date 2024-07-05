@@ -1,11 +1,13 @@
-
+import { useState } from 'react';
 
 function Course({ course }) {
+    const [checked, setChecked] = useState(false);
+    
     return (
         <tr>
             <td>
                 <div className="select-box-wrapper">
-                    <input type="checkbox" className="select-box" />
+                    <input type="checkbox" className="select-box" id={course.crn} value={course.crn} onClick={() => setChecked(!checked)} />
                 </div>
             </td>
             <td>{course.crn}</td>

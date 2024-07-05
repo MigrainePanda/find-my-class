@@ -22,16 +22,19 @@
 }
 
 .form-table td, th {
-    padding: 5px;
+    padding: 8px;
 }
 
 .select-box-wrapper {
     display: flex;
     justify-content: center;
-
 }
 
 .select-box {
     width: 15px;
     height: 15px;
+}
+
+.form-submit {
+    margin-top: 30px;
 }
