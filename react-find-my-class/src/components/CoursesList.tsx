@@ -2,6 +2,7 @@ import Course from './Course';
 
 function CourseList({ courses }) {
     const num_courses_displayed = 20;
+    
     return (
         <table id="courses" className="form-table">
             <thead>
