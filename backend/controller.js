@@ -15,19 +15,33 @@ app.use(cors())
 
 app.get('/courses', (req, res) => {
   let query_strings = req.query;
-  if (Object.keys(query_strings).length === 0) {
+  let keys = Object.keys(query_strings);
+  let values = Object.values(query_strings);
+  // console.log("query_strings: ", query_strings)
+
+  if (keys.length === 0) {
     handleCoursesResponse(courses.retrieveAllCourses(), req, res);
     return;
   }
-  if (query_strings['codeInput'] !== '') {
-    handleCoursesResponse(courses.retrieveCoursesByKeyword(query_strings['codeInput']), req, res);
+
+  if (keys.indexOf('mycourses') > -1) {
+    if (query_strings['mycourses'] === "") {
+      handleCoursesResponse(courses.retrieveAllCourses(), req, res);
+      return;
+    }
+    handleCoursesResponse(courses.retrieveCoursesByCRN(query_strings['mycourses']), req, res);
     return;
   }
-  if (query_strings['crnInput'] !== '') {
-    handleCoursesResponse(courses.retrieveCourseByCRN(query_strings['crnInput']), req, res);
+
+  if (keys.indexOf('code') > -1 && query_strings['code'] !== "") {
+    handleCoursesResponse(courses.retrieveCoursesByKeyword(query_strings['code']), req, res);
     return;
   }
-  
+
+  if (keys.indexOf('crn') > -1 && query_strings['crn'] !== "") {
+    handleCoursesResponse(courses.retrieveCourseByCRN(query_strings['crn']), req, res);
+    return;
+  }
 });
 
 

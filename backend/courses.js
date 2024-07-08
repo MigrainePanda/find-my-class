@@ -22,7 +22,6 @@ const retrieveCoursesByKeyword = async (keyword) => {
   return new Promise((resolve, reject) => {
     db.query(q, (err, res) => {
       if (err) reject(err);
-      console.log(res);
       resolve(res)
     });
   });
@@ -30,6 +29,17 @@ const retrieveCoursesByKeyword = async (keyword) => {
 
 const retrieveCourseByCRN = async (crn) => {
   const q = `SELECT * FROM courses WHERE crn=${crn}`;
+  return new Promise((resolve, reject) => {
+    db.query(q, (err, res) => {
+      if (err) reject(err);
+      resolve(res)
+    });
+  });
+}
+
+const retrieveCoursesByCRN = async (crn_dict) => {
+  let q_val = "(" + `${crn_dict.split(" ")}` + ")"
+  const q = `SELECT * FROM courses WHERE crn IN ${q_val}`;
   return new Promise((resolve, reject) => {
     db.query(q, (err, res) => {
       if (err) reject(err);
@@ -152,4 +162,4 @@ async function storeCourse(course) {
 // console.log(await fetchCourseByCRN("15512"))
 // console.log(await fetchCoursesByTerm("202501"))
 
-export { fetchCoursesByKeyword, fetchCourseByCRN, fetchCoursesByTerm, retrieveAllCourses, retrieveCoursesByKeyword, retrieveCourseByCRN, retrieveCoursesByTerm };
+export { fetchCoursesByKeyword, fetchCourseByCRN, fetchCoursesByTerm, retrieveAllCourses, retrieveCoursesByKeyword, retrieveCourseByCRN, retrieveCoursesByCRN, retrieveCoursesByTerm };
