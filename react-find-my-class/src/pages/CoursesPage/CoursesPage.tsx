@@ -3,24 +3,34 @@ import Navbar from "../../components/Navigation/Navigation"
 import Footer from "../../components/Footer"
 
 import "./CoursesPage.css"
+import { resolvePath } from "react-router-dom";
 // import CourseList from "../../components/CoursesList";
 
 function CoursesPage() {
     const topCheckbox = useRef();
-    const [allCourses, setAllCourses] = useState([]);
+    const [allCourses, setAllCourses] = useState(() => {
+        const saved = localStorage.getItem("coursesLocal");
+        const initialValue = JSON.parse(saved);
+        return initialValue || "noLocal";
+    });
     const [checkedByCRN, setCheckedByCRN] = useState(new Set());
     const [numChecked, setNumChecked] = useState(checkedByCRN.size);
     const numCoursesDisplayedDefault = 5;  //30;
     const [numCoursesDisplayed, setNumCoursesDisplayed] = useState(numCoursesDisplayedDefault);
 
     const loadCourses = async () => {
-        const response = await fetch("http://localhost:8800/courses?" + 
-            new URLSearchParams((window.location.search).toString()).toString()
-        );
+        const queryStrings = new URLSearchParams((window.location.search).toString()).toString();
+        if (allCourses !== "noLocal" && queryStrings === "") {
+            return new Promise((resolve) => {resolve("")});
+        }
+
+        const response = await fetch("http://localhost:8800/courses?" + queryStrings);
         const courses = await response.json();
         console.log("loadcourses: ", courses)
         setNumCoursesDisplayed(Math.min(numCoursesDisplayedDefault, courses.length));
-        setAllCourses(courses.slice(0, numCoursesDisplayed));
+        const displayedCourses = courses.slice(0, numCoursesDisplayed);
+        setAllCourses(displayedCourses);
+        localStorage.setItem("coursesLocal", JSON.stringify(displayedCourses));
         setNumChecked(0);
     }
     useEffect(() => {
