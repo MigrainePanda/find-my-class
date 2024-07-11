@@ -1,45 +1,46 @@
-import { useState, useEffect, useRef } from "react";
-import Navbar from "../../components/Navigation/Navigation"
-import Footer from "../../components/Footer"
+import { useState, useEffect, useRef, useCallback } from "react";
 
+import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.js';
 import "./CoursesPage.css"
-import { resolvePath } from "react-router-dom";
 // import CourseList from "../../components/CoursesList";
 
 function CoursesPage() {
-    const topCheckbox = useRef();
+    const topCheckbox = useRef(null);
     const [allCourses, setAllCourses] = useState(() => {
-        const saved = localStorage.getItem("coursesLocal");
-        const initialValue = JSON.parse(saved);
-        return initialValue || "noLocal";
+        return (JSON.parse(localStorage.getItem("coursesLocal") || '{}')) || "noLocal";
     });
     const [checkedByCRN, setCheckedByCRN] = useState(new Set());
     const [numChecked, setNumChecked] = useState(checkedByCRN.size);
     const numCoursesDisplayedDefault = 5;  //30;
     const [numCoursesDisplayed, setNumCoursesDisplayed] = useState(numCoursesDisplayedDefault);
 
-    const loadCourses = async () => {
-        const queryStrings = new URLSearchParams((window.location.search).toString()).toString();
-        if (allCourses !== "noLocal" && queryStrings === "") {
-            return new Promise((resolve) => {resolve("")});
-        }
+    const memo_loadCourses = useCallback(
+        async () => {
+            const queryStrings = new URLSearchParams((window.location.search).toString()).toString();
+            if (allCourses !== "noLocal" && queryStrings === "") {
+                return new Promise((resolve) => {resolve("")});
+            }
 
-        const response = await fetch("http://localhost:8800/courses?" + queryStrings);
-        const courses = await response.json();
-        console.log("loadcourses: ", courses)
-        setNumCoursesDisplayed(Math.min(numCoursesDisplayedDefault, courses.length));
-        const displayedCourses = courses.slice(0, numCoursesDisplayed);
-        setAllCourses(displayedCourses);
-        localStorage.setItem("coursesLocal", JSON.stringify(displayedCourses));
-        setNumChecked(0);
-    }
+            const response = await fetch("http://localhost:8800/courses?" + queryStrings);
+            const courses = await response.json();
+            console.log("loadcourses: ", courses)
+
+            setNumCoursesDisplayed(Math.min(numCoursesDisplayedDefault, courses.length));
+            const displayedCourses = courses.slice(0, numCoursesDisplayed);
+            setAllCourses(displayedCourses);
+            localStorage.setItem("coursesLocal", JSON.stringify(displayedCourses));
+            setNumChecked(0);
+        }, 
+        [allCourses, numCoursesDisplayed]
+    );
+
     useEffect(() => {
-        loadCourses();
+        memo_loadCourses();
     }, []);
 
     const handleOnChange = (crn) => {
         const updatedCheckedByCRN = new Set(checkedByCRN);
-        // removes checkbox if not in set
         if (updatedCheckedByCRN.has(crn)) {
             updatedCheckedByCRN.delete(crn);
         } else {
@@ -55,14 +56,12 @@ function CoursesPage() {
 
     const handleSelectDeselectAll = (event) => {
         if (event.target.checked) {
-            // set all checkboxes to checked
             const allChecked = new Set(allCourses.map((course) => {
                 return course["crn"]
             }));
             setCheckedByCRN(allChecked);
             setNumChecked(allChecked.size);
         } else {
-            // empty when all checkboxes are selected
             setCheckedByCRN(new Set());
             setNumChecked(0);
         }
@@ -77,8 +76,7 @@ function CoursesPage() {
     }
 
     return (
-        <div className="outer-wrapper">
-            <Navbar />
+        <>
             <main className="main">
                 <p className="page-main-description">Find your class around Oregon State University.</p>
 
@@ -170,8 +168,7 @@ function CoursesPage() {
                     </table>
                 </div>
             </main>
-            <Footer />
-        </div>
+        </>
     );}
 
 export default CoursesPage;
