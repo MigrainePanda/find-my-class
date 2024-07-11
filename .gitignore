@@ -25,4 +25,5 @@ dist-ssr
 
 .env
 
-extra.js
+test.js
+test2.js

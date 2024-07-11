@@ -2,11 +2,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // components
-// import WebTitle from "./components/WebTitle.tsx";
+import Navbar from "./components/Navigation/Navigation.tsx"
+import Footer from "./components/Footer.tsx";
 
 // pages
 import HomePage from "./pages/HomePage/HomePage.tsx";
 import CoursesPage from "./pages/CoursesPage/CoursesPage.tsx";
+import MapPage from "./pages/MapPage/MapPage.tsx";
 
 import "./App.css";
 
@@ -14,10 +16,13 @@ import "./App.css";
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/courses" element={<CoursesPage />} />
+        <Route path="/map" element={<MapPage />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
