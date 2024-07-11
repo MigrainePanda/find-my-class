@@ -10,6 +10,7 @@ function Navigation() {
                 <nav className='navbar-menu'>
                     <NavLink className='navbar-menu-items' to='/'>Home</NavLink>
                     <NavLink className='navbar-menu-items' to='/courses'>Courses</NavLink>
+                    <NavLink className='navbar-menu-items' to='/map'>Map</NavLink>
                 </nav>
             </div>
         </header>

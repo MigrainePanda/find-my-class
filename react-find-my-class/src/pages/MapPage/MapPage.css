@@ -1,0 +1,10 @@
+.map-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+#map {
+    position: absolute;
+    width: 70%;
+    height: 800px;
+}
