@@ -16,7 +16,6 @@ app.use(cors())
 app.get('/courses', (req, res) => {
   let query_strings = req.query;
   let keys = Object.keys(query_strings);
-  let values = Object.values(query_strings);
   // console.log("query_strings: ", query_strings)
 
   if (keys.length === 0) {
@@ -44,6 +43,28 @@ app.get('/courses', (req, res) => {
   }
 });
 
+app.get('/map', (req, res) => {
+  // const query_strings = req.query;
+  // const keys = Object.keys(query_strings);
+
+  // if (keys.length == 0) {
+  //   console.log("no query string keys");
+  // }
+
+  location.fetchAllLocations()
+    .then(locations => {
+      if (locations !== null) {
+        console.log(`All locations were retrieved from the collection.`);
+        res.json(locations);
+      } else {
+        res.status(404).json({ Error: 'There were no locations found on this server.' });
+      }         
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(400).json({ Error: 'Server could not process or recognize the retrieval request.' });
+    });
+});
 
 
 
