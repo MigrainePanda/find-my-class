@@ -2,41 +2,48 @@ import { useState, useEffect, useRef, useCallback } from "react";
 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet/dist/leaflet.js';
-import "./CoursesPage.css"
-// import CourseList from "../../components/CoursesList";
+import "./CoursesPage.css";
 
 function CoursesPage() {
     const topCheckbox = useRef(null);
-    const [allCourses, setAllCourses] = useState(() => {
-        return (JSON.parse(localStorage.getItem("coursesLocal") || '{}')) || "noLocal";
+    const [allCourses, setAllCourses] = useState([]);
+    const [myCourses] = useState(() => {
+        return (JSON.parse(localStorage.getItem("mycoursesLocal") || "[]")) || [];
     });
+
     const [checkedByCRN, setCheckedByCRN] = useState(new Set());
     const [numChecked, setNumChecked] = useState(checkedByCRN.size);
     const numCoursesDisplayedDefault = 5;  //30;
     const [numCoursesDisplayed, setNumCoursesDisplayed] = useState(numCoursesDisplayedDefault);
 
-    const memo_loadCourses = useCallback(
+    const memoLoadCourses = useCallback(
         async () => {
-            const queryStrings = new URLSearchParams((window.location.search).toString()).toString();
-            if (allCourses !== "noLocal" && queryStrings === "") {
-                return new Promise((resolve) => {resolve("")});
-            }
+            const params = new URLSearchParams((window.location.search).toString());
+            const queryStrings = params.toString();
+
+            // if (queryStrings === "") {
+            //     return;
+            // }
 
             const response = await fetch("http://localhost:8800/courses?" + queryStrings);
             const courses = await response.json();
             console.log("loadcourses: ", courses)
-
+            
+            setNumChecked(0);
             setNumCoursesDisplayed(Math.min(numCoursesDisplayedDefault, courses.length));
             const displayedCourses = courses.slice(0, numCoursesDisplayed);
             setAllCourses(displayedCourses);
-            localStorage.setItem("coursesLocal", JSON.stringify(displayedCourses));
-            setNumChecked(0);
+            
+            if (params.has("crn") || params.has("code")) {
+                console.log("uodateed allcoruseslocal")
+                localStorage.setItem("allcoursesLocal", JSON.stringify(displayedCourses));
+            }
         }, 
-        [allCourses, numCoursesDisplayed]
+        [numCoursesDisplayed]
     );
 
     useEffect(() => {
-        memo_loadCourses();
+        memoLoadCourses();
     }, []);
 
     const handleOnChange = (crn) => {
@@ -67,12 +74,48 @@ function CoursesPage() {
         }
     };
 
-    const handleCheckedByCRNToString = (coursesSet) => {
+    const handleShowMyCourses = () => {
+        if (myCourses.length <= 0) {
+            return "";
+        }
         let resp = "";
-        for (const course of coursesSet.values()) {
-            resp += course + " ";
+        for (const course of myCourses) {
+            resp += course["crn"] + " "
         }
         return resp.substring(0, resp.length-1);
+    }
+
+    const handleSubmitCourses = () => {
+        const currLocal = JSON.parse(localStorage.getItem("mycoursesLocal") || "[]"); // arr of dicts
+        const crn_arr = Array.from(checkedByCRN);
+
+        // gets all crns
+        const crns = new Set();
+        for (let i=0; i<currLocal.length; i++) {
+            crns.add(currLocal[i]["crn"]);
+        }
+        for(let i=0; i<crn_arr.length; i++) {
+            crns.add(crn_arr[i]);
+        }
+        const crns_arr = Array.from(crns);
+
+        // gets all objects from crns
+        const res = new Set();
+        for (let i=0; i<currLocal.length; i++) {
+            res.add(currLocal[i]);
+        }
+
+        const all_arr = Array.from(allCourses);
+        for (let i=0; i<all_arr.length; i++) {
+            if (crns_arr.indexOf(all_arr[i]["crn"]) != -1) {
+                res.add(all_arr[i]);
+            }
+        }
+        // console.log("res: ", JSON.stringify(Array.from(res)));
+        localStorage.removeItem("mycoursesLocal");
+        localStorage.setItem("mycoursesLocal", JSON.stringify(Array.from(res)));
+
+        return "";
     }
 
     return (
@@ -81,10 +124,15 @@ function CoursesPage() {
                 <p className="page-main-description">Find your class around Oregon State University.</p>
 
                 <div className="form-container">
-                    <form method="get" className="form-input">
+                    <form method="get" className="form-input" >
                         <input type="text" id="crn" name="crn" className="courseInputs" placeholder="CRN..."/>
                         <input type="text" id="code" name="code" className="codeInputs" placeholder="Code..."/>
                         <input type="submit" value="Search" />
+                    </form>
+                    <form method="get" className="form-input" >
+                        <button id="show-mycourses" name="mycourses" value={handleShowMyCourses()}
+                        >Show My Courses</button>
+                        {/* value={handleShowMyCourses(myCourses) */}
                     </form>
                 </div>
                 
@@ -113,17 +161,8 @@ function CoursesPage() {
                                 </th>
                                 <th colSpan={3}>
                                     <form method="get" className="form-input" >
-                                        <input 
-                                            type="text"
-                                            id="mycourses"
-                                            name="mycourses"
-                                            defaultValue={handleCheckedByCRNToString(checkedByCRN)}
-                                            hidden
-                                        />
-                                        <input 
-                                            type="submit" 
-                                            value="Submit Selection"
-                                        />
+                                        <button id="submit-mycourses" name="mycourses" value={handleSubmitCourses()}
+                                        >Submit Selection</button>
                                     </form>
                                 </th>
                             </tr>
