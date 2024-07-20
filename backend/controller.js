@@ -14,9 +14,9 @@ app.use(express.json())
 app.use(cors())
 
 app.get('/courses', (req, res) => {
-  let query_strings = req.query;
-  let keys = Object.keys(query_strings);
-  // console.log("query_strings: ", query_strings)
+  let queryStrings = req.query;
+  let keys = Object.keys(queryStrings);
+  // console.log("queryStrings: ", queryStrings)
 
   if (keys.length === 0) {
     handleCoursesResponse(courses.retrieveAllCourses(), req, res);
@@ -24,52 +24,73 @@ app.get('/courses', (req, res) => {
   }
 
   if (keys.indexOf('mycourses') > -1) {
-    if (query_strings['mycourses'] === "") {
+    if (queryStrings['mycourses'] === "") {
       handleCoursesResponse(courses.retrieveAllCourses(), req, res);
       return;
     }
-    handleCoursesResponse(courses.retrieveCoursesByCRN(query_strings['mycourses']), req, res);
+    handleCoursesResponse(courses.retrieveCoursesByCRN(queryStrings['mycourses']), req, res);
     return;
   }
 
-  if (keys.indexOf('code') > -1 && query_strings['code'] !== "") {
-    handleCoursesResponse(courses.retrieveCoursesByKeyword(query_strings['code']), req, res);
+  if (keys.indexOf('code') > -1 && queryStrings['code'] !== "") {
+    handleCoursesResponse(courses.retrieveCoursesByKeyword(queryStrings['code']), req, res);
     return;
   }
 
-  if (keys.indexOf('crn') > -1 && query_strings['crn'] !== "") {
-    handleCoursesResponse(courses.retrieveCourseByCRN(query_strings['crn']), req, res);
+  if (keys.indexOf('crn') > -1 && queryStrings['crn'] !== "") {
+    handleCoursesResponse(courses.retrieveCourseByCRN(queryStrings['crn']), req, res);
     return;
   }
 });
 
 app.get('/map', (req, res) => {
-  // const query_strings = req.query;
-  // const keys = Object.keys(query_strings);
+  const queryStrings = req.query;
+  const keys = Object.keys(queryStrings);
 
-  // if (keys.length == 0) {
-  //   console.log("no query string keys");
-  // }
+  if (keys.indexOf('mycourses') > -1 && queryStrings['mycourses'] !== "") {
+    const coursesArr = queryStrings['mycourses'].split(',');
 
-  location.fetchAllLocations()
-    .then(locations => {
-      if (locations !== null) {
-        console.log(`All locations were retrieved from the collection.`);
-        res.json(locations);
-      } else {
-        res.status(404).json({ Error: 'There were no locations found on this server.' });
-      }         
-    })
-    .catch(error => {
-      console.log(error);
-      res.status(400).json({ Error: 'Server could not process or recognize the retrieval request.' });
-    });
+    (async () => {
+      const allLocations = await location.fetchAllLocations();
+
+      if (coursesArr.length === 0) {
+        console.log("All possible locations retrieved.");
+        res.json(allLocations);
+      }
+      let userLocations = await location.getUserLocations(coursesArr);
+      console.log(userLocations);
+      console.log("All user locations retrieved.");
+      
+      userLocations = userLocations.filter(function(element) {
+        return element !== undefined;
+      });
+      userLocations = userLocations.map(function(element) {
+        const crnidx = element.indexOf("|")-1;
+        const crn = element.substring(0, crnidx);
+        const shortidx = element.indexOf("in") + 3;
+        const shortUpper = element.substring(shortidx, shortidx+4);
+        for (let i=0; i<allLocations.length; i++) {
+          if (shortUpper === allLocations[i]["short"]) {
+            let temp = allLocations[i];
+            temp["crn"] = crn;
+            return temp;
+          }
+        }
+        return crn + " | " + shortUpper;
+      });
+
+      // console.log("all: ", allLocations)
+      console.log("data: ", userLocations);
+      res.json(userLocations);
+    })(coursesArr);
+    
+  }
 });
 
 
 
 app.listen(8800, () => {
-  console.log("Server running on port 8800.")
+  console.log("Server running on port 8800.");
 })
 
 

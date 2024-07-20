@@ -7,11 +7,8 @@ import "./MapPage.css"
 import Map from "../../components/Map.tsx"
 
 function MapPage() {
-    // const [allCourses] = useState([]);
-    // const [allCourses] = useState(() => {
-    //     return (JSON.parse(localStorage.getItem("coursesLocal") || '{}')) || "noLocal";
-    // });
-    const [myCourses] = useState(() => {
+
+    const [myCoursesCRN] = useState(() => {
         const local = (JSON.parse(localStorage.getItem("mycoursesLocal") || "[]")) || [];
         const uniqueCRNS = new Set();
         for (let i=0; i<local.length; i++) {
@@ -19,12 +16,16 @@ function MapPage() {
                 uniqueCRNS.add(local[i]["crn"]);
             }
         }
-
         const arrFromUniqueCRNS = Array.from(uniqueCRNS);
+        return arrFromUniqueCRNS;
+    });
+
+    const [myCourses] = useState(() => {
+        const local = (JSON.parse(localStorage.getItem("mycoursesLocal") || "[]")) || [];
         const res: object[] = [];
-        for (let i=0; i< arrFromUniqueCRNS.length; i++) {
+        for (let i=0; i< myCoursesCRN.length; i++) {
             for (let j=0; j<local.length; j++) {
-                if (arrFromUniqueCRNS[i] === local[j]["crn"]) {
+                if (myCoursesCRN[i] === local[j]["crn"]) {
                     res.push(local[j]);
                     break;
                 }
@@ -36,18 +37,19 @@ function MapPage() {
     const [locations, setLocations] = useState([]);
     const memoLoadLocations = useCallback(
         async() => {
-            const response = await fetch("http://localhost:8800/map");
+            const query_strings = "mycourses=" + myCoursesCRN.toString();
+            const response = await fetch("http://localhost:8800/map?" + query_strings);
             const locations_resp = await response.json();
             console.log("loadlocations: ", locations_resp)
 
             setLocations(locations_resp);
         },
-        []
+        [myCoursesCRN]
     );
     
     useEffect(() => {
         memoLoadLocations();
-    }, []);
+    }, [memoLoadLocations]);
 
     return (
         <>
@@ -67,6 +69,7 @@ function MapPage() {
                                 <th>Instructor</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
+                                <th>Location</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,6 +83,7 @@ function MapPage() {
                                     <td>{course["instructor"]}</td>
                                     <td>{course["startDate"]}</td>
                                     <td>{course["endDate"]}</td>
+                                    <td></td>
                                 </tr>
 
                             )}
