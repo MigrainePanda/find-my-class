@@ -16,7 +16,6 @@ app.use(cors())
 app.get('/courses', (req, res) => {
   let queryStrings = req.query;
   let keys = Object.keys(queryStrings);
-  // console.log("queryStrings: ", queryStrings)
 
   if (keys.length === 0) {
     handleCoursesResponse(courses.retrieveAllCourses(), req, res);
@@ -58,7 +57,6 @@ app.get('/map', (req, res) => {
         res.json(allLocations);
       }
       let userLocations = await location.getUserLocations(coursesArr);
-      console.log(userLocations);
       console.log("All user locations retrieved.");
       
       userLocations = userLocations.filter(function(element) {
@@ -79,8 +77,6 @@ app.get('/map', (req, res) => {
         return crn + " | " + shortUpper;
       });
 
-      // console.log("all: ", allLocations)
-      console.log("data: ", userLocations);
       res.json(userLocations);
     })(coursesArr);
     

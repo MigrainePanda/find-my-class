@@ -46,6 +46,21 @@ function MapPage() {
         },
         [myCoursesCRN]
     );
+
+    function getLocation(crn) {
+        console.log("fasjfnksjfnskjnf", locations);
+        if (locations.length === 0) {
+            return "Loading...";
+        }
+        let res = "N/A";
+        for (let i=0; i<locations.length; i++) {
+            if (crn === locations[i]["crn"]) {
+                res = locations[i]["short"];
+                break;
+            }
+        }
+        return res;
+    }
     
     useEffect(() => {
         memoLoadLocations();
@@ -83,7 +98,7 @@ function MapPage() {
                                     <td>{course["instructor"]}</td>
                                     <td>{course["startDate"]}</td>
                                     <td>{course["endDate"]}</td>
-                                    <td></td>
+                                    <td>{getLocation(course["crn"])}</td>
                                 </tr>
 
                             )}

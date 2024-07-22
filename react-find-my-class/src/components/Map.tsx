@@ -14,9 +14,24 @@ function Map( { locations } ) {
             return
         }
 
-        const center_lat = 44.5635;
-        const center_long = -123.283;
-        const center_zoom = 16;
+        function getCenter() {
+            const default_lat = 44.5635;
+            const default_long = -123.283;
+            let lat = 0;
+            let long = 0;
+            for (let i=0; i<locations.length; i++) {
+                lat += locations[i]["lat"];
+                long += locations[i]["long"];
+            }
+            lat = lat ? lat/locations.length : default_lat;
+            long = long ? long/locations.length : default_long;
+            return {"lat": lat, "long": long, "zoom": 17};
+        }
+
+        const center = getCenter();
+        const center_lat = center["lat"];
+        const center_long = center["long"];
+        const center_zoom = center["zoom"];
 
         const map = L.map("map", {
             center: [center_lat, center_long],
