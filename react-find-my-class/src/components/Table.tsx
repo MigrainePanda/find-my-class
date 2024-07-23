@@ -41,6 +41,8 @@ function Table( props ) {
 
     function handleClick() {
         props.parentHandleClick(checkedByCRN);
+        setCheckedByCRN(new Set());
+        setNumChecked(0);
     }
 
     return (

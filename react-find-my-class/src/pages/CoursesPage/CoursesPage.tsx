@@ -84,8 +84,15 @@ function CoursesPage() {
         setUserCourses(res);
     }
 
-    function handleChildClickRm(a) {
-        console.log(a)
+    function handleChildClickRm(checkedByCRN) {
+        const curr: any = new Set(userCourses);
+        for (const obj of curr) {
+            if (checkedByCRN.has(obj["crn"])) {
+                curr.delete(obj);
+            }
+        }
+        console.log(curr);
+        setUserCourses(Array.from(curr));
     }
 
     return (
